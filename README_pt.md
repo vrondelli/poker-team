@@ -2,10 +2,20 @@
 
 **Uma Estratégia de Operação de Poker Baseada em Dados e Alto Rakeback.**
 
-[🇧🇷 Português](README_pt.md) | [🇺🇸 English](README_en.md)
+[🇧🇷 Português (Atual)](README_pt.md) | [🇺🇸 English](README.md)
 
 ## Visão Geral
 Este projeto define o plano diretor para um Time de Poker lucrativo operando em ambientes de alto rakeback (NL20+). Utilizamos Análise Massiva de Dados (MDA), ferramentas de estudo proprietárias e um processo de seleção rigoroso para garantir vantagem constante.
+
+## 🌟 Ferramentas Online (GitHub Pages)
+
+### 🏰 [O Cofre do Guardião (Jogo de Recrutamento)](https://vrondelli.github.io/poker-team/recruitment_game/guardian_vault.html)
+Teste sua lógica e flexibilidade cognitiva em nossa avaliação.
+
+### 📈 [Simulador Financeiro](https://vrondelli.github.io/poker-team/financial_simulator.html)
+Modelagem operacional interativa. Ajuste volume, rakeback e divisões para ver a lucratividade.
+
+---
 
 ## 📚 Central de Documentação
 
@@ -21,12 +31,11 @@ Nossa vantagem vem dos dados. Leia sobre nossa VM de Mineração 24/7, fluxos de
 ### [🚀 Estratégia de Crescimento](docs/growth_strategy_pt.md)
 Roadmap futuro para escalar até NL100 e diversificar em um Ecossistema SaaS (SnapMDA, Plataformas de Treino).
 
-### [🎯 Processo de Recrutamento](recruitment_process.md)
+### [🎯 Processo de Recrutamento](docs/recruitment_process_pt.md)
 Nosso funil único para encontrar talentos.
-*   **O Jogo:** [O Cofre do Guardião (Avaliação)](recruitment_game/guardian_vault.html) - Um puzzle lógico para filtrar candidatos.
 
 ---
 
-## Início Rápido
-*   **Recrutamento:** Abra `recruitment_game/guardian_vault.html` em um navegador.
+## Início Rápido (Dev)
+*   **Recrutamento:** Abra `recruitment_game/guardian_vault.html` localmente.
 *   **Simulação:** Rode `npx ts-node calculate_scenarios.ts` para ver modelos financeiros.
