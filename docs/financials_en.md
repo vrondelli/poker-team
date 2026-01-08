@@ -74,7 +74,7 @@ We model the team based on three distinct player profiles to estimate range-boun
 
 ### Bankroll Requirements (<1% Risk of Ruin)
 Calculated using the Kelly criterion approximation for Risk of Ruin:
-`B = -(σ² / 2μ) * ln(R)`
+$$ B = -\frac{\sigma^2}{2\mu} \ln(R) $$
 
 #### 1. Team Capital Requirements (Investor Risk)
 Since the Team provides 100% of the bankroll for all 3 players, we treat the operation as a single portfolio.

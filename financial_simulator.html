@@ -197,6 +197,13 @@
                 <h2>Global Parameters</h2>
                 <div class="controls-grid">
                     <div class="form-group">
+                        <label>Load Scenario</label>
+                        <select onchange="loadPreset(this.value)">
+                            <option value="growth">Future Growth (Scale)</option>
+                            <option value="mvp">MVP Team (3 Players)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>Rakeback Deal (%)</label>
                         <input type="number" id="rb-deal" value="70" onchange="recalc()">
                     </div>
@@ -275,12 +282,27 @@
             'NL200': { name: 'NL200', bbValue: 2.00, estRake: 6.0 }
         };
 
-        // Initial Data
-        let roster = [
-            { id: 1, role: 'Junior', count: 2, stake: 'NL20', vol: 20000, wr: 1 },
-            { id: 2, role: 'Senior', count: 3, stake: 'NL60', vol: 15000, wr: 2 },
-            { id: 3, role: 'Captain', count: 2, stake: 'NL100', vol: 12000, wr: 3 }
-        ];
+        // Presets
+        const PRESETS = {
+            'growth': [
+                { id: 1, role: 'Junior', count: 2, stake: 'NL20', vol: 20000, wr: 1 },
+                { id: 2, role: 'Senior', count: 3, stake: 'NL60', vol: 15000, wr: 2 },
+                { id: 3, role: 'Captain', count: 2, stake: 'NL100', vol: 12000, wr: 3 }
+            ],
+            'mvp': [
+                { id: 1, role: 'Crusher', count: 1, stake: 'NL20', vol: 12000, wr: 5 },
+                { id: 2, role: 'Avg Reg', count: 1, stake: 'NL20', vol: 12000, wr: 0 },
+                { id: 3, role: 'Losing', count: 1, stake: 'NL20', vol: 12000, wr: -5 }
+            ]
+        };
+
+        // Initial Data (Default to Growth)
+        let roster = JSON.parse(JSON.stringify(PRESETS['growth']));
+
+        function loadPreset(key) {
+            roster = JSON.parse(JSON.stringify(PRESETS[key]));
+            renderRoster();
+        }
 
         function renderRoster() {
             const tbody = document.getElementById('roster-body');

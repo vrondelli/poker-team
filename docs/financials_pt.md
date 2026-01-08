@@ -74,7 +74,7 @@ Modelamos o time com base em três perfis distintos de jogadores para estimar a 
 
 ### Requisitos de Bankroll (<1% Risco de Ruína)
 Calculado usando o Critério de Kelly para Risco de Ruína:
-`B = -(σ² / 2μ) * ln(R)`
+$$ B = -\frac{\sigma^2}{2\mu} \ln(R) $$
 
 #### 1. Requisitos de Capital do Time (Risco do Investidor)
 Como o Time fornece 100% do bankroll para os 3 jogadores, tratamos a operação como um portfólio único.
