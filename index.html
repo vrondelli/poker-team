@@ -7,18 +7,21 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
     <style>
         :root {
-            --bg: #050505;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --border: rgba(255, 255, 255, 0.1);
+            --bg: #0d1117;
+            --sidebar-bg: #010409;
+            --border: #30363d;
             --accent: #58a6ff;
-            --accent-glow: rgba(88, 166, 255, 0.2);
+            --accent-dim: rgba(88, 166, 255, 0.1);
             --text-primary: #f0f6fc;
             --text-secondary: #8b949e;
             --font-main: 'Outfit', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,133 +30,262 @@
             background-color: var(--bg);
             color: var(--text-primary);
             font-family: var(--font-main);
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #fff 0%, #888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .subtitle {
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            font-size: 1.1rem;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            padding: 2rem;
-            border-radius: 12px;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
             overflow: hidden;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
+        /* Sidebar */
+        aside {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            overflow-y: auto;
+            flex-shrink: 0;
         }
 
-        .card h2 {
-            font-size: 1.4rem;
-            margin-bottom: 0.5rem;
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .card p {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        .nav-group {
+            margin-bottom: 1.5rem;
         }
 
-        .icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(88, 166, 255, 0.2);
-            color: var(--accent);
-            font-size: 0.7rem;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
+        .nav-title {
+            font-size: 0.75rem;
             text-transform: uppercase;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
         }
 
-        footer {
-            margin-top: 4rem;
+        .nav-link {
+            display: block;
+            padding: 8px 12px;
             color: var(--text-secondary);
-            font-size: 0.8rem;
-        }
-        
-        a.doc-link {
-            color: var(--accent);
             text-decoration: none;
-            margin: 0 10px;
+            border-radius: 6px;
+            margin-bottom: 2px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: var(--accent-dim);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .tool-link {
+            color: var(--accent);
+        }
+
+        /* Language Toggle */
+        .lang-toggle {
+            display: flex;
+            background: var(--border);
+            border-radius: 6px;
+            padding: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .lang-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            padding: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: var(--font-main);
+            font-weight: 600;
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 3rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Markdown Styles */
+        .markdown-body {
+            line-height: 1.6;
+        }
+
+        .markdown-body h1 { font-size: 2.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+        .markdown-body h2 { font-size: 1.8rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--text-primary); }
+        .markdown-body h3 { font-size: 1.4rem; margin-top: 1.5rem; margin-bottom: 0.8rem; color: var(--text-primary); }
+        .markdown-body p { margin-bottom: 1rem; color: #c9d1d9; }
+        .markdown-body ul, .markdown-body ol { margin-bottom: 1rem; padding-left: 1.5rem; color: #c9d1d9; }
+        .markdown-body li { margin-bottom: 0.25rem; }
+        .markdown-body strong { color: var(--text-primary); font-weight: 600; }
+        .markdown-body code { background: rgba(110,118,129,0.4); padding: 0.2em 0.4em; border-radius: 6px; font-family: var(--font-code); font-size: 0.85em; }
+        .markdown-body pre { background: #161b22; padding: 1rem; border-radius: 6px; overflow-x: auto; margin-bottom: 1rem; border: 1px solid var(--border); }
+        .markdown-body pre code { background: none; padding: 0; color: #e6edf3; }
+        .markdown-body blockquote { border-left: 4px solid var(--border); padding-left: 1rem; color: var(--text-secondary); margin-bottom: 1rem; }
+        .markdown-body table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        .markdown-body th, .markdown-body td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+        .markdown-body th { background: rgba(255,255,255,0.05); }
+        .markdown-body a { color: var(--accent); text-decoration: none; }
+        .markdown-body a:hover { text-decoration: underline; }
+        .markdown-body hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
+
+        /* Loader */
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; overflow: auto; }
+            aside { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+            main { padding: 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Poker Team Portal</h1>
-        <p class="subtitle">Operational Tools & Strategic Documentation</p>
-
-        <div class="grid">
-            <a href="recruitment_game/guardian_vault.html" class="card">
-                <div class="badge">Assessment</div>
-                <div class="icon">🏰</div>
-                <h2>The Guardian's Vault</h2>
-                <p>Logic puzzle game for candidate recruitment.</p>
-            </a>
-
-            <a href="financial_simulator.html" class="card">
-                <div class="badge">Tool</div>
-                <div class="icon">📈</div>
-                <h2>Financial Simulator</h2>
-                <p>Interactive projections for volume, rakeback & deals.</p>
-            </a>
+    <aside>
+        <div class="brand">♠️ Poker Ops</div>
+        
+        <div class="lang-toggle">
+            <button class="lang-btn active" onclick="setLang('en')">English</button>
+            <button class="lang-btn" onclick="setLang('pt')">Português</button>
         </div>
 
-        <footer>
-            <p>Documentation Hubs:</p>
-            <div style="margin-top:0.5rem">
-                <a href="https://github.com/vrondelli/poker-team/blob/main/README.md" class="doc-link">🇺🇸 English Framework</a>
-                <span style="opacity:0.3">|</span>
-                <a href="https://github.com/vrondelli/poker-team/blob/main/README_pt.md" class="doc-link">🇧🇷 Estrutura em Português</a>
+        <nav>
+            <div class="nav-group">
+                <div class="nav-title">Tools</div>
+                <a href="recruitment_game/guardian_vault.html" class="nav-link tool-link">🏰 Guardian's Vault</a>
+                <a href="financial_simulator.html" class="nav-link tool-link">📈 Finance Simulator</a>
             </div>
-        </footer>
-    </div>
 
+            <div class="nav-group">
+                <div class="nav-title">Documentation</div>
+                <div id="doc-links">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <main>
+        <div id="loader" class="loader">Loading...</div>
+        <div id="content" class="markdown-body">
+            <!-- Rendered Markdown lands here -->
+        </div>
+    </main>
+
+    <script>
+        const FILES = {
+            en: [
+                { title: 'Overview', path: 'README.md' }, // Use raw README for English Overview
+                { title: 'Financial Strategy', path: 'docs/financials_en.md' },
+                { title: 'Operations', path: 'docs/operations_en.md' },
+                { title: 'Tech & Study', path: 'docs/tech_and_study_en.md' },
+                { title: 'Growth Strategy', path: 'docs/growth_strategy_en.md' },
+                { title: 'Recruitment Process', path: 'docs/recruitment_process_en.md' }
+            ],
+            pt: [
+                { title: 'Visão Geral', path: 'README_pt.md' },
+                { title: 'Estratégia Financeira', path: 'docs/financials_pt.md' },
+                { title: 'Operações', path: 'docs/operations_pt.md' },
+                { title: 'Tecnologia e Estudo', path: 'docs/tech_and_study_pt.md' },
+                { title: 'Estratégia de Crescimento', path: 'docs/growth_strategy_pt.md' },
+                { title: 'Processo de Recrutamento', path: 'docs/recruitment_process_pt.md' }
+            ]
+        };
+
+        let currentLang = 'en';
+
+        function setLang(lang) {
+            currentLang = lang;
+            
+            // Update Toggle UI
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText.toLowerCase().includes(lang === 'en' ? 'english' : 'português'));
+            });
+
+            renderNav();
+            loadDoc(FILES[lang][0].path); // Load first doc
+        }
+
+        function renderNav() {
+            const container = document.getElementById('doc-links');
+            container.innerHTML = FILES[currentLang].map(file => `
+                <a onclick="loadDoc('${file.path}')" class="nav-link" id="nav-${file.path}">
+                    ${file.title}
+                </a>
+            `).join('');
+        }
+
+        async function loadDoc(path) {
+            const contentDiv = document.getElementById('content');
+            const loader = document.getElementById('loader');
+            
+            // UI Updates
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            const activeLink = document.getElementById(`nav-${path}`);
+            if(activeLink) activeLink.classList.add('active');
+
+            loader.style.display = 'block';
+            contentDiv.style.opacity = '0.5';
+
+            try {
+                const response = await fetch(path);
+                if (!response.ok) throw new Error('Failed to load file');
+                
+                const text = await response.text();
+                
+                // Clean up links in markdown to work within the app if needed
+                // For now, we just render
+                contentDiv.innerHTML = marked.parse(text);
+                
+                // Post-process table support if needed by Marked options (enabled by default)
+                
+            } catch (err) {
+                contentDiv.innerHTML = `<h1>Error</h1><p>Could not load documentation: ${path}</p>`;
+            } finally {
+                loader.style.display = 'none';
+                contentDiv.style.opacity = '1';
+                window.scrollTo(0,0);
+            }
+        }
+
+        // Init
+        setLang('en');
+
+        // Handle LaTeX rendering manually if needed later, 
+        // for now we display the raw latex block which is readable enough or standard text.
+        // (Marked doesn't support Latex OOTB without plugins, but user just asked for "On Page" view).
+    </script>
 </body>
 </html>
