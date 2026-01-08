@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Guardian's Vault | Poker Team Recruitment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #050505;
+            --card-bg: rgba(22, 27, 34, 0.7);
+            --accent: #3fb950;
+            --accent-glow: rgba(63, 185, 80, 0.2);
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --danger: #f85149;
+            --highlight: #58a6ff;
+            --border: #30363d;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(88, 166, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(63, 185, 80, 0.05) 0%, transparent 20%);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Header Style */
+        header {
+            text-align: center; 
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+        
+        header h2 {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fff 0%, #a5d6ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2rem;
+        }
+
+        /* Typography */
+        h1, h3 { margin-top: 0; color: #fff; }
+        h1 { font-size: 1.8rem; font-weight: 700; }
+        h3 { font-size: 1.2rem; font-weight: 600; color: var(--highlight); margin-bottom: 1rem; }
+        p { line-height: 1.6; color: var(--text-secondary); }
+        strong { color: var(--text-primary); font-weight: 600; }
+        em { color: var(--highlight); font-style: normal; }
+
+        /* Phases */
+        .phase { display: none; animation: fadeIn 0.5s ease forwards; }
+        .phase.active { display: block; }
+
+        /* Manual Section */
+        .manual-content {
+            background: rgba(13, 17, 23, 0.6);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 3px solid var(--highlight);
+            margin: 1.5rem 0 2rem 0;
+        }
+        .manual-content ul { padding-left: 1.2rem; }
+        .manual-content li { margin-bottom: 0.8rem; color: var(--text-secondary); }
+
+        /* Game Elements */
+        .timer-bar {
+            width: 100%;
+            height: 4px;
+            background: #21262d;
+            border-radius: 2px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+        .timer-progress {
+            height: 100%;
+            background: var(--highlight);
+            width: 100%;
+            transition: width 1s linear;
+            box-shadow: 0 0 10px var(--highlight);
+        }
+        .timer-warning .timer-progress { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+
+        .scenario-box {
+            background: rgba(31, 111, 235, 0.1);
+            border: 1px solid rgba(31, 111, 235, 0.3);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+        }
+
+        .extra-info {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            border-left: 2px solid var(--accent);
+            padding-left: 1rem;
+        }
+
+        /* Interactive Elements */
+        .item-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(33, 38, 45, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checkbox-wrapper:hover {
+            background: rgba(48, 54, 61, 0.8);
+            border-color: var(--highlight);
+        }
+        .checkbox-wrapper input {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-secondary);
+            border-radius: 4px;
+            margin-right: 12px;
+            position: relative;
+            background: transparent;
+            cursor: pointer;
+        }
+        .checkbox-wrapper input:checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .checkbox-wrapper input:checked::after {
+            content: '✓';
+            color: white;
+            position: absolute;
+            font-size: 14px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Ratio/Extra Selection */
+        .ratio-section {
+            display: none;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            animation: fadeIn 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .ratio-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .ratio-btn {
+            flex: 1;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ratio-btn:hover {
+            border-color: var(--highlight);
+            color: var(--highlight);
+        }
+        .ratio-btn.selected {
+            background: var(--highlight);
+            color: white;
+            border-color: var(--highlight);
+        }
+
+        /* Main Button */
+        .action-btn {
+            background: linear-gradient(to right, #238636, #2ea043);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+            letter-spacing: 0.5px;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(35, 134, 54, 0.4);
+        }
+        .action-btn:active { transform: translateY(0); }
+
+        /* Results */
+        .result-card {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(13, 17, 23, 0.5);
+            border-radius: 8px;
+            border-left: 4px solid transparent;
+        }
+        .pass { border-color: var(--accent); }
+        .fail { border-color: var(--danger); }
+        .status-text { font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+        .pass .status-text { color: var(--accent); }
+        .fail .status-text { color: var(--danger); }
+
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Floating Particles (Cosmetic) */
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Elements -->
+    <div class="particle" style="width: 300px; height: 300px; top: -50px; left: -50px;"></div>
+    <div class="particle" style="width: 400px; height: 400px; bottom: -100px; right: -100px;"></div>
+
+    <div class="container">
+        <header>
+            <h2>♠️ POKER TEAM</h2>
+            <p>Recruitment Assessment v2.0</p>
+        </header>
+
+        <!-- PHASE 1: MANUAL -->
+        <div id="phase-manual" class="phase active">
+            <div class="card">
+                <h1>Game Rules</h1>
+                <p>Master the mechanics below. While you read, the clock is stopped. Once you start, you have <strong>60 seconds</strong> per Night.</p>
+                
+                <div class="manual-content">
+                    <h3>Loot Table</h3>
+                    <p>The Vault contains ONE of these: <strong>Diamond</strong> (Highest Value), <strong>Platinum</strong> (High Value), <strong>Gold</strong> (High Value), <strong>Silver</strong> (Medium Value), <strong>Rock</strong> (Worthless).</p>
+                    
+                    <h3>Guardian Mechanics</h3>
+                    <ul style="line-height:1.8">
+                        <li><strong>Aggro:</strong> The Guardian <strong>LOCKS</strong> or <strong>ATTACKS</strong> only with High Value items (<strong>Diamond/Platinum/Gold</strong>) or when faking with a Rock. He <em>NEVER</em> attacks with Medium Value (Silver).</li>
+                        <li><strong>Patterns:</strong> Diamond/Gold <em>ALWAYS</em> Attack or Lock. <strong>Platinum</strong> is lazy: it <em>ALWAYS</em> Locks, but <em>NEVER</em> Attacks. Rocks fake an attack <em>SOMETIMES</em>.</li>
+                        <li><strong>Weather:</strong> The Guardian stays OUTSIDE in the rain <em>ONLY</em> if he holds Waterproof items (<strong>Diamond</strong> or <strong>Gold</strong>). He retreats inside with Silver, Platinum or Rock.</li>
+                        <li><strong>Audio Cues:</strong> A "Clicking" sound is heard <em>ONLY</em> with Metallic items (<strong>Gold, Platinum, Silver</strong>).</li>
+                    </ul>
+                </div>
+
+                <button class="action-btn" onclick="startGame()">I Understood - ENTER THE VAULT</button>
+            </div>
+        </div>
+
+        <!-- PHASE 2: GAME -->
+        <div id="phase-game" class="phase">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <span id="night-title" style="color:var(--text-secondary); font-weight:600; text-transform:uppercase; letter-spacing:1px;">Night X</span>
+                    <span id="timer-text" style="font-family:'JetBrains Mono'; color:var(--text-secondary)">60s</span>
+                </div>
+                
+                <div class="timer-bar"><div id="timer-progress" class="timer-progress"></div></div>
+
+                <div class="scenario-box">
+                    <div id="scenario-text">...</div>
+                </div>
+
+                <div id="extra-info-container" class="extra-info"></div>
+
+                <p style="margin-bottom:1rem; font-size:0.95rem;">Task: Select <strong>ALL</strong> items that are still possible (Narrow down the list):</p>
+                <div class="item-list" id="options-list">
+                    <!-- Checkboxes injected -->
+                </div>
+
+                <!-- Night 2 Exclusive: Ratio/Extra -->
+                <div id="ratio-section" class="ratio-section">
+                    <!-- Dynamic Content -->
+                </div>
+
+                <button class="action-btn" onclick="submitNight()">Confirm Logic</button>
+            </div>
+        </div>
+
+        <!-- PHASE 3: RESULTS -->
+        <div id="phase-result" class="phase">
+            <div class="card">
+                <div style="text-align:center; margin-bottom:2rem;">
+                    <h1>Assessment Complete</h1>
+                    <p>Please capture this screen for your application.</p>
+                </div>
+                <div id="result-details"></div>
+
+                <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;">
+                    <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 0.5rem;">Tactical Log (Required)</h3>
+                    <p style="font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-secondary);">Briefly justify your decisions. <strong>Specifically explain how you calculated the Night 2 Probability.</strong></p>
+                    <textarea placeholder="e.g. I eliminated Platinum because... The 40% comes from..." style="width: 100%; height: 100px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: var(--text-primary); padding: 10px; border-radius: 6px; font-family: 'Outfit', sans-serif; resize: vertical;"></textarea>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* --- GAME DATA --- */
+        const gameData = [
+            {
+                id: 1,
+                title: "Night 1",
+                scenario: "The Guardian <strong>LOCKS</strong> the door.",
+                info: null,
+                axiom_reminder: "Rule: He Attacks (Lock/Attack) with High Value or Fakes. NEVER with Medium.",
+                options: ["Diamond", "Platinum", "Gold", "Silver", "Rock"],
+                correctItems: ["Diamond", "Platinum", "Gold", "Rock"], 
+                extraQuestion: null
+            },
+            {
+                id: 2,
+                title: "Night 2",
+                scenario: "The Guardian <strong>ATTACKS</strong>.",
+                info: "Intel: Tonight, he fakes with Rocks <strong>50%</strong> of the time. (High Value attacks 100%)",
+                options: ["Diamond", "Platinum", "Gold", "Silver", "Rock"],
+                correctItems: ["Diamond", "Gold", "Rock"], 
+                extraQuestion: {
+                    text: "Given the attack, what is the exact probability the Vault holds <strong>GOLD</strong>? (Note: Consider the Full Range: Diamond, Gold, Platinum, Rock)",
+                    options: ["20%", "25%", "40%", "50%"],
+                    correct: "40%" // Gold(1) / (Diamond(1) + Gold(1) + Rock(0.5)) = 1/2.5 = 40%
+                }
+            },
+            {
+                id: 3,
+                title: "Night 3",
+                scenario: "Event 1: It starts <strong>RAINING</strong> (Guardian stays OUT).<br>Event 2: A <strong>CLICKING</strong> sound is heard.",
+                info: null,
+                axiom_reminder: "Rain: Stays out ONLY with Diamond/Gold.<br>Click: ONLY Gold/Silver/Platinum.",
+                options: ["Diamond", "Platinum", "Gold", "Silver", "Rock"],
+                correctItems: ["Gold"],
+                extraQuestion: null
+            }
+        ];
+
+        /* --- STATE --- */
+        let state = {
+            nightIdx: 0,
+            answers: [],
+            score: 0,
+            timer: null,
+            timeLeft: 60,
+            selectedExtra: null,
+            previousSelection: ["Diamond", "Platinum", "Gold", "Silver", "Rock"] // Initial Full Range
+        };
+
+        /* --- LOGIC --- */
+        function startGame() {
+            document.getElementById('phase-manual').classList.remove('active');
+            loadNight(0);
+        }
+
+        function resetGame() {
+            state = {
+                nightIdx: 0,
+                answers: [],
+                score: 0,
+                timer: null,
+                timeLeft: 60,
+                selectedExtra: null,
+                previousSelection: ["Diamond", "Platinum", "Gold", "Silver", "Rock"]
+            };
+            startGame();
+        }
+
+        function loadNight(idx) {
+            if (idx >= gameData.length) {
+                endGame();
+                return;
+            }
+
+            state.nightIdx = idx;
+            state.timeLeft = 60;
+            state.selectedExtra = null;
+            const data = gameData[idx];
+
+            document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+            document.getElementById('phase-game').classList.add('active');
+
+            // Render Text
+            document.getElementById('night-title').innerText = data.title;
+            document.getElementById('scenario-text').innerHTML = data.scenario;
+            
+            const infoContainer = document.getElementById('extra-info-container');
+            if (data.info) {
+                infoContainer.style.display = 'block';
+                infoContainer.innerHTML = data.info;
+            } else {
+                infoContainer.style.display = 'none';
+            }
+
+            // Render Options (Funneled & Hiding Eliminated)
+            const list = document.getElementById('options-list');
+            list.innerHTML = '';
+            
+            // Filter options to show only what was in previousSelection
+            const visibleOptions = data.options.filter(opt => state.previousSelection.includes(opt));
+            
+            visibleOptions.forEach(opt => {
+                const id = `cb-${opt}`;
+                list.innerHTML += `
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" value="${opt}" id="${id}">
+                        ${opt}
+                    </label>
+                `;
+            });
+
+            // Render Extra Question (Dynamic)
+            const extraSection = document.getElementById('ratio-section');
+            if (data.extraQuestion) {
+                extraSection.style.display = 'block';
+                extraSection.innerHTML = `
+                    <p style="margin-bottom:0.5rem; font-size:0.95rem;">${data.extraQuestion.text}</p>
+                    <div class="ratio-options">
+                        ${data.extraQuestion.options.map(opt => 
+                            `<button class="ratio-btn" onclick="selectExtra(this, '${opt}')">${opt}</button>`
+                        ).join('')}
+                    </div>
+                `;
+            } else {
+                extraSection.style.display = 'none';
+            }
+            
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(state.timer);
+            const bar = document.getElementById('timer-progress');
+            const txt = document.getElementById('timer-text');
+            bar.parentElement.classList.remove('timer-warning');
+
+            state.timer = setInterval(() => {
+                state.timeLeft--;
+                txt.innerText = state.timeLeft + 's';
+                bar.style.width = (state.timeLeft / 60 * 100) + '%';
+
+                if (state.timeLeft < 15) {
+                    bar.parentElement.classList.add('timer-warning');
+                }
+
+                if (state.timeLeft <= 0) {
+                    clearInterval(state.timer);
+                    submitNight(true); // Forced submission (timeout)
+                }
+            }, 1000);
+        }
+
+        function selectExtra(btn, val) {
+            document.querySelectorAll('.ratio-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            state.selectedExtra = val;
+        }
+
+        function submitNight(isTimeout = false) {
+            clearInterval(state.timer);
+            const data = gameData[state.nightIdx];
+
+            // Get selected items
+            const selectedItems = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => selectedItems.push(cb.value));
+
+            // Logic Check
+            // 1. Items match exactly?
+            const itemsCorrect = (selectedItems.length === data.correctItems.length) && 
+                                 selectedItems.every(val => data.correctItems.includes(val));
+            
+            // 2. Extra Question correct?
+            let extraCorrect = true;
+            if (data.extraQuestion) {
+                if (state.selectedExtra !== data.extraQuestion.correct) extraCorrect = false;
+            }
+
+            // 3. Not timed out?
+            const failedByTimeout = isTimeout;
+
+            // Final Pass/Fail
+            const passed = itemsCorrect && extraCorrect && !failedByTimeout;
+            
+            state.answers.push({
+                night: data.title,
+                passed: passed,
+                reason: getReason(passed, failedByTimeout, itemsCorrect, extraCorrect, data)
+            });
+
+            // Update Funnel: Stick to user selection
+            state.previousSelection = selectedItems;
+            
+            if (passed) state.score++;
+
+            loadNight(state.nightIdx + 1);
+        }
+
+        function getReason(passed, timeout, itemsOk, extraOk, data) {
+            if (passed) return "Logic Verified.";
+            if (timeout) return "Time ran out.";
+            if (!itemsOk) return `Incorrect Range. Correct: [${data.correctItems.join(', ')}]`;
+            if (!extraOk) return `Range Correct, but Probability incorrect. Correct: ${data.extraQuestion.correct}`;
+            return "Incorrect logic.";
+        }
+
+        function endGame() {
+            document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+            document.getElementById('phase-result').classList.add('active');
+
+            const container = document.getElementById('result-details');
+            
+            // Generate Summary
+            let html = `<div style="text-align:center; margin-bottom:2rem;">
+                            <h2 style="font-size:3rem; margin-bottom:0.5rem; color:${state.score === 3 ? '#3fb950' : '#f85149'}">${state.score}/3</h2>
+                            <p>${state.score === 3 ? "PERFECT SCORE - PROCEED TO INTERVIEW" : "ASSESSMENT FAILED"}</p>
+                        </div>`;
+
+            state.answers.forEach(ans => {
+                html += `
+                    <div class="result-card ${ans.passed ? 'pass' : 'fail'}">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                            <span style="font-weight:600;">${ans.night}</span>
+                            <span class="status-text">${ans.passed ? 'PASSED' : 'FAILED'}</span>
+                        </div>
+                        <div style="font-size:0.9rem; color:var(--text-secondary);">${ans.reason}</div>
+                    </div>
+                `;
+            });
+
+            // Try Again Button
+            html += `
+                <div style="margin-top:2rem; text-align:center;">
+                    <button class="action-btn" onclick="resetGame()" style="background:#58a6ff; width:auto; padding: 12px 32px;">Try Again</button>
+                    ${state.score === 3 ? '<p style="margin-top:1rem; font-size:0.8rem; opacity:0.7">Take a screenshot before retrying!</p>' : ''}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+    </script>
+</body>
+</html>

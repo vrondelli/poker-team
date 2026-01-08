@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Guardian's Vault | Recruitment Assessment</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header style="text-align:center; margin-bottom:2rem;">
+            <h2>♠️ Poker Team Recruitment</h2>
+            <p style="color:#8b949e">Logic & Range Reading Assessment</p>
+        </header>
+
+        <!-- PHASE 1: MANUAL -->
+        <div id="phase-manual" class="phase active">
+            <div class="card">
+                <h1>The Manual</h1>
+                <p>Read the axioms below carefully. You will need them to solve the 3 Nights.</p>
+                
+                <div class="manual-content">
+                    <h3>The Items</h3>
+                    <p>The Vault contains ONE of these: <strong>Diamond</strong> (Nuts), <strong>Gold</strong> (Strong), <strong>Silver</strong> (Medium), <strong>Rock</strong> (Bluff).</p>
+                    
+                    <h3>Behavior Rules</h3>
+                    <ul style="line-height:1.6">
+                        <li><strong>Aggression:</strong> Guardian <strong>LOCKS/ATTACKS</strong> with Nuts (Diamond) and sometimes Bluffs (Rock). He <em>NEVER</em> acts aggressively with Medium (Silver).</li>
+                        <li><strong>Frequencies:</strong> Diamonds <em>ALWAYS</em> attack. Rocks attack <em>SOMETIMES</em> (depending on the night).</li>
+                        <li><strong>Environment (Rain):</strong> Guardian stays OUTSIDE in rain <em>ONLY</em> if he holds <strong>Diamond</strong> or <strong>Gold</strong>. (He goes inside with Silver/Rock).</li>
+                        <li><strong>Tells (Sound):</strong> A "Clicking" sound is heard <em>ONLY</em> with Metallic items (<strong>Gold</strong> or <strong>Silver</strong>).</li>
+                    </ul>
+                </div>
+
+                <button onclick="startGame()">I Understood the Rules - START</button>
+            </div>
+        </div>
+
+        <!-- PHASE 2: GAME -->
+        <div id="phase-game" class="phase">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; margin-bottom:1rem; color:#8b949e">
+                    <span id="night-title">Night X</span>
+                </div>
+
+                <div class="scenario-box">
+                    <div id="scenario-text" class="scenario-text">...</div>
+                </div>
+
+                <div style="font-size:0.9rem; color:#8b949e; margin-bottom:1rem; font-style:italic">
+                    <span id="extra-info"></span>
+                </div>
+
+                <p>Select ALL possible items in the Vault:</p>
+                <div class="item-list" id="options-list">
+                    <!-- Checkboxes injected by JS -->
+                </div>
+
+                <button onclick="submitNight()">Confirm Logic</button>
+            </div>
+        </div>
+
+        <!-- PHASE 3: RESULTS -->
+        <div id="phase-result" class="phase">
+            <div class="card" style="text-align:center">
+                <h1>Assessment Complete</h1>
+                <div id="result-details"></div>
+                <p style="margin-top:2rem; color:#8b949e">Take a screenshot of this page and verify with the recruiter.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
