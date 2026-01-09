@@ -265,11 +265,18 @@
                 
                 const text = await response.text();
                 
-                // Clean up links in markdown to work within the app if needed
-                // For now, we just render
                 contentDiv.innerHTML = marked.parse(text);
                 
-                // Post-process table support if needed by Marked options (enabled by default)
+                // Intercept Markdown links to stay in SPA
+                contentDiv.querySelectorAll('a').forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href.endsWith('.md')) {
+                        link.onclick = (e) => {
+                            e.preventDefault();
+                            loadDoc(href);
+                        };
+                    }
+                });
                 
             } catch (err) {
                 contentDiv.innerHTML = `<h1>Error</h1><p>Could not load documentation: ${path}</p>`;
