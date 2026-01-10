@@ -188,12 +188,8 @@
                 <a href="financial_simulator.html" class="nav-link tool-link">📈 Finance Simulator</a>
             </div>
 
-            <div class="nav-group">
-                <div class="nav-title">Documentation</div>
-                <div id="doc-links">
-                    <!-- Injected by JS -->
-                </div>
-            </div>
+            <div id="dynamic-nav"></div>
+
         </nav>
     </aside>
 
@@ -207,20 +203,42 @@
     <script>
         const FILES = {
             en: [
-                { title: 'Overview', path: 'README.md' }, // Use raw README for English Overview
-                { title: 'Financial Strategy', path: 'docs/financials_en.md' },
-                { title: 'Operations', path: 'docs/operations_en.md' },
-                { title: 'Tech & Study', path: 'docs/tech_and_study_en.md' },
-                { title: 'Growth Strategy', path: 'docs/growth_strategy_en.md' },
-                { title: 'Recruitment Process', path: 'docs/recruitment_process_en.md' }
+                {
+                    category: "Documentation",
+                    items: [
+                        { title: 'Overview', path: 'README.md' },
+                        { title: 'Financial Strategy', path: 'docs/financials_en.md' },
+                        { title: 'Operations', path: 'docs/operations_en.md' },
+                        { title: 'Tech & Study', path: 'docs/tech_and_study_en.md' },
+                        { title: 'Growth Strategy', path: 'docs/growth_strategy_en.md' },
+                        { title: 'Recruitment Process', path: 'docs/recruitment_process_en.md' }
+                    ]
+                },
+                {
+                    category: "Study Material",
+                    items: [
+                        { title: 'The Poker Player', path: 'study-material/poker-player.md' }
+                    ]
+                }
             ],
             pt: [
-                { title: 'Visão Geral', path: 'README_pt.md' },
-                { title: 'Estratégia Financeira', path: 'docs/financials_pt.md' },
-                { title: 'Operações', path: 'docs/operations_pt.md' },
-                { title: 'Tecnologia e Estudo', path: 'docs/tech_and_study_pt.md' },
-                { title: 'Estratégia de Crescimento', path: 'docs/growth_strategy_pt.md' },
-                { title: 'Processo de Recrutamento', path: 'docs/recruitment_process_pt.md' }
+                {
+                    category: "Documentação",
+                    items: [
+                        { title: 'Visão Geral', path: 'README_pt.md' },
+                        { title: 'Estratégia Financeira', path: 'docs/financials_pt.md' },
+                        { title: 'Operações', path: 'docs/operations_pt.md' },
+                        { title: 'Tecnologia e Estudo', path: 'docs/tech_and_study_pt.md' },
+                        { title: 'Estratégia de Crescimento', path: 'docs/growth_strategy_pt.md' },
+                        { title: 'Processo de Recrutamento', path: 'docs/recruitment_process_pt.md' }
+                    ]
+                },
+                {
+                    category: "Material de Estudo",
+                    items: [
+                        { title: 'Guia de Leaks', path: 'study-material/poker_leaks_guide_pt.md' }
+                    ]
+                }
             ]
         };
 
@@ -235,15 +253,23 @@
             });
 
             renderNav();
-            loadDoc(FILES[lang][0].path); // Load first doc
+            // Load first doc of first category
+            if (FILES[lang].length > 0 && FILES[lang][0].items.length > 0) {
+                loadDoc(FILES[lang][0].items[0].path); 
+            }
         }
 
         function renderNav() {
-            const container = document.getElementById('doc-links');
-            container.innerHTML = FILES[currentLang].map(file => `
-                <a onclick="loadDoc('${file.path}')" class="nav-link" id="nav-${file.path}">
-                    ${file.title}
-                </a>
+            const container = document.getElementById('dynamic-nav');
+            container.innerHTML = FILES[currentLang].map(group => `
+                <div class="nav-group">
+                    <div class="nav-title">${group.category}</div>
+                    ${group.items.map(file => `
+                        <a onclick="loadDoc('${file.path}')" class="nav-link" id="nav-${file.path}">
+                            ${file.title}
+                        </a>
+                    `).join('')}
+                </div>
             `).join('');
         }
 
