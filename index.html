@@ -244,7 +244,25 @@
 
         let currentLang = 'en';
 
-        function setLang(lang) {
+        // Parse URL params
+        function getParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                lang: params.get('lang'),
+                doc: params.get('doc')
+            };
+        }
+
+        function updateURL(path) {
+            const url = new URL(window.location);
+            url.searchParams.set('lang', currentLang);
+            if (path) {
+                url.searchParams.set('doc', path);
+            }
+            return url.toString();
+        }
+
+        function setLang(lang, loadDefault = true) {
             currentLang = lang;
             
             // Update Toggle UI
@@ -253,9 +271,12 @@
             });
 
             renderNav();
-            // Load first doc of first category
-            if (FILES[lang].length > 0 && FILES[lang][0].items.length > 0) {
-                loadDoc(FILES[lang][0].items[0].path); 
+            
+            // Load first doc of first category if requested
+            if (loadDefault) {
+                if (FILES[lang].length > 0 && FILES[lang][0].items.length > 0) {
+                    loadDoc(FILES[lang][0].items[0].path); 
+                }
             }
         }
 
@@ -273,7 +294,7 @@
             `).join('');
         }
 
-        async function loadDoc(path) {
+        async function loadDoc(path, updateHistory = true) {
             const contentDiv = document.getElementById('content');
             const loader = document.getElementById('loader');
             
@@ -284,6 +305,10 @@
 
             loader.style.display = 'block';
             contentDiv.style.opacity = '0.5';
+
+            if (updateHistory) {
+                history.pushState({ path, lang: currentLang }, '', updateURL(path));
+            }
 
             try {
                 const response = await fetch(path);
@@ -313,12 +338,34 @@
             }
         }
 
-        // Init
-        setLang('en');
+        // Handle History Navigation (Back/Forward)
+        window.addEventListener('popstate', (event) => {
+            const { lang, doc } = getParams();
+            const targetLang = lang || 'en';
+            
+            // If language changed in history, update it without loading default doc yet
+            if (targetLang !== currentLang) {
+                setLang(targetLang, false);
+            }
 
-        // Handle LaTeX rendering manually if needed later, 
-        // for now we display the raw latex block which is readable enough or standard text.
-        // (Marked doesn't support Latex OOTB without plugins, but user just asked for "On Page" view).
+            if (doc) {
+                loadDoc(doc, false);
+            } else {
+                // Fallback to default if we popped to a state without a doc param
+                if (FILES[targetLang].length > 0 && FILES[targetLang][0].items.length > 0) {
+                    loadDoc(FILES[targetLang][0].items[0].path, false);
+                }
+            }
+        });
+
+        // Initial Load
+        const { lang: initLang, doc: initDoc } = getParams();
+        const startLang = initLang || 'en';
+        
+        setLang(startLang, !initDoc);
+        if (initDoc) {
+            loadDoc(initDoc, false);
+        }
     </script>
 </body>
 </html>
