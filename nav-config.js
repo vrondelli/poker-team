@@ -39,6 +39,10 @@ window.FILES = {
                 {
                     "title": "What is to be a Poker Player?",
                     "path": "study-material/poker-player.md"
+                },
+                {
+                    "title": "The Real Game: From Tree to Solver",
+                    "path": "study-material/the-real-game.md"
                 }
             ]
         }
